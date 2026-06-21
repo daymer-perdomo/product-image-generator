@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kaba SOS Kit — Image Generator</title>
+<style>
+  :root {
+    --pink:       #E91E8C;
+    --pink-light: #FF69B4;
+    --pink-pale:  #FFE4F3;
+    --pink-bg:    #FFF0F8;
+    --pink-dark:  #C2177A;
+    --white:      #FFFFFF;
+    --gray-100:   #F8F8F8;
+    --gray-200:   #EEEEEE;
+    --gray-400:   #BBBBBB;
+    --gray-600:   #777777;
+    --gray-800:   #333333;
+    --green:      #22C55E;
+    --red:        #EF4444;
+    --amber:      #F59E0B;
+    --shadow:     0 2px 12px rgba(233,30,140,0.10);
+    --shadow-lg:  0 4px 24px rgba(233,30,140,0.18);
+    --radius:     12px;
+    --radius-sm:  8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--pink-bg); color: var(--gray-800); min-height: 100vh; }
+
+  header {
+    background: linear-gradient(135deg, var(--pink) 0%, var(--pink-light) 100%);
+    color: var(--white); padding: 0 28px; height: 64px;
+    display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 2px 16px rgba(233,30,140,0.25);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-logo { width:38px;height:38px;background:rgba(255,255,255,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0; }
+  header h1 { font-size:20px;font-weight:700;letter-spacing:-0.3px; }
+  header p  { font-size:13px;opacity:.85;margin-top:1px; }
+  .header-badge { margin-left:auto;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;letter-spacing:.3px; }
+
+  .app-body { display:flex;min-height:calc(100vh - 64px); }
+
+  .sidebar {
+    width:300px;flex-shrink:0;background:var(--white);border-right:1px solid var(--pink-pale);
+    padding:20px 16px;display:flex;flex-direction:column;gap:20px;
+    overflow-y:auto;max-height:calc(100vh - 64px);position:sticky;top:64px;
+  }
+  .sidebar-section { background:var(--gray-100);border-radius:var(--radius-sm);padding:14px;display:flex;flex-direction:column;gap:10px; }
+  .sidebar-section-title { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--pink); }
+  label { font-size:13px;font-weight:600;color:var(--gray-800); }
+  .input-wrap { position:relative;display:flex;align-items:center; }
+  .input-wrap input[type="password"],
+  .input-wrap input[type="text"] { width:100%;padding:9px 38px 9px 12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;outline:none;transition:border-color .2s;background:var(--white); }
+  .input-wrap input:focus { border-color:var(--pink-light); }
+  .eye-btn { position:absolute;right:10px;background:none;border:none;cursor:pointer;color:var(--gray-600);font-size:16px;padding:2px;line-height:1; }
+  .hint { font-size:11px;color:var(--gray-600);line-height:1.5; }
+  .hint a { color:var(--pink);text-decoration:none; }
+
+  .upload-area { border:2px dashed var(--pink-light);border-radius:var(--radius-sm);padding:16px;text-align:center;cursor:pointer;transition:background .2s,border-color .2s;position:relative; }
+  .upload-area:hover { background:var(--pink-pale);border-color:var(--pink); }
+  .upload-area input[type="file"] { position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%; }
+  .upload-icon { font-size:28px;margin-bottom:6px; }
+  .upload-text { font-size:12px;color:var(--gray-600); }
+  .ref-preview { display:none;position:relative;border-radius:var(--radius-sm);overflow:hidden; }
+  .ref-preview img { width:100%;height:120px;object-fit:cover;display:block;border-radius:var(--radius-sm); }
+  .ref-preview-remove { position:absolute;top:6px;right:6px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center; }
+  .ref-label { font-size:11px;text-align:center;color:var(--green);font-weight:600;margin-top:4px; }
+
+  .progress-wrap { display:flex;flex-direction:column;gap:6px; }
+  .progress-bar-bg { height:10px;background:var(--gray-200);border-radius:99px;overflow:hidden; }
+  .progress-bar-fill { height:100%;background:linear-gradient(90deg,var(--pink) 0%,var(--pink-light) 100%);border-radius:99px;transition:width .4s ease;width:0%; }
+  .progress-text { font-size:12px;color:var(--gray-600);text-align:center; }
+
+  .btn-primary { width:100%;padding:12px;background:linear-gradient(135deg,var(--pink) 0%,var(--pink-dark) 100%);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .1s;letter-spacing:.2px;display:flex;align-items:center;justify-content:center;gap:8px; }
+  .btn-primary:hover { opacity:.9; }
+  .btn-primary:active { transform:scale(.98); }
+  .btn-primary:disabled { opacity:.5;cursor:not-allowed;transform:none; }
+
+  .log-box { background:#1A1A2E;border-radius:var(--radius-sm);padding:10px;max-height:130px;overflow-y:auto;font-family:'Courier New',monospace;font-size:11px;display:flex;flex-direction:column;gap:3px; }
+  .log-entry { line-height:1.4; }
+  .log-entry.info  { color:#A0D4FF; }
+  .log-entry.ok    { color:#86EFAC; }
+  .log-entry.warn  { color:#FDE68A; }
+  .log-entry.error { color:#FCA5A5; }
+
+  .main-content { flex:1;padding:24px;overflow-y:auto; }
+  .section-title { font-size:16px;font-weight:700;color:var(--gray-800);margin-bottom:18px;display:flex;align-items:center;gap:8px; }
+  .section-title span { color:var(--pink); }
+  .cards-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:20px; }
+
+  .img-card { background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .2s;position:relative;border:2px solid transparent; }
+  .img-card:hover { box-shadow:var(--shadow-lg); }
+  .img-card.state-loading { border-color:var(--amber); }
+  .img-card.state-success { border-color:var(--green); }
+  .img-card.state-error   { border-color:var(--red); }
+
+  .card-header { padding:14px 16px 10px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--gray-200); }
+  .card-num { width:32px;height:32px;flex-shrink:0;background:linear-gradient(135deg,var(--pink) 0%,var(--pink-light) 100%);color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800; }
+  .card-info { flex:1; }
+  .card-title { font-size:14px;font-weight:700;color:var(--gray-800); }
+  .card-dims  { font-size:11px;color:var(--pink);font-weight:600;margin-top:2px; }
+  .card-status-badge { padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;flex-shrink:0;align-self:center; }
+  .badge-idle    { background:var(--gray-200);color:var(--gray-600); }
+  .badge-loading { background:#FEF3C7;color:#92400E; }
+  .badge-success { background:#DCFCE7;color:#166534; }
+  .badge-error   { background:#FEE2E2;color:#991B1B; }
+
+  .tooltip-btn { background:none;border:none;cursor:help;color:var(--gray-400);font-size:15px;padding:2px;position:relative;flex-shrink:0;align-self:center; }
+  .tooltip-popup { display:none;position:absolute;right:0;top:28px;background:#1A1A2E;color:#E2E8F0;border-radius:var(--radius-sm);padding:10px 12px;font-size:11px;line-height:1.6;width:220px;z-index:50;box-shadow:0 4px 20px rgba(0,0,0,.25); }
+  .tooltip-btn:hover .tooltip-popup { display:block; }
+
+  .success-check { position:absolute;top:12px;right:52px;width:24px;height:24px;background:var(--green);border-radius:50%;display:none;align-items:center;justify-content:center;color:white;font-size:13px;animation:popIn .35s cubic-bezier(.175,.885,.32,1.275); }
+  @keyframes popIn { 0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1} }
+
+  .card-body { padding:14px 16px;display:flex;flex-direction:column;gap:10px;flex:1; }
+  .prompt-label { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-600);display:flex;align-items:center;justify-content:space-between; }
+  .prompt-reset { font-size:10px;color:var(--pink);background:none;border:none;cursor:pointer;font-weight:600;text-transform:lowercase;letter-spacing:0; }
+  .prompt-textarea { width:100%;min-height:120px;padding:10px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;line-height:1.5;resize:vertical;outline:none;color:var(--gray-800);transition:border-color .2s; }
+  .prompt-textarea:focus { border-color:var(--pink-light); }
+
+  .card-error-msg { display:none;background:#FEE2E2;color:#991B1B;border-radius:var(--radius-sm);padding:8px 10px;font-size:12px;line-height:1.5; }
+
+  .preview-area { display:none;border-radius:var(--radius-sm);overflow:hidden;position:relative;background:var(--gray-100);cursor:pointer; }
+  .preview-area img { width:100%;display:block;max-height:220px;object-fit:contain;transition:opacity .3s; }
+  .preview-overlay { position:absolute;inset:0;background:rgba(233,30,140,0);display:flex;align-items:center;justify-content:center;transition:background .2s;opacity:0; }
+  .preview-area:hover .preview-overlay { background:rgba(233,30,140,0.18);opacity:1; }
+  .preview-overlay span { background:rgba(0,0,0,.6);color:#fff;border-radius:99px;padding:6px 14px;font-size:12px;font-weight:600; }
+
+  .card-footer { padding:10px 16px 14px;display:flex;gap:8px; }
+  .btn-generate { flex:1;padding:10px;background:linear-gradient(135deg,var(--pink) 0%,var(--pink-dark) 100%);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .1s;display:flex;align-items:center;justify-content:center;gap:6px; }
+  .btn-generate:hover:not(:disabled) { opacity:.88; }
+  .btn-generate:active:not(:disabled) { transform:scale(.98); }
+  .btn-generate:disabled { opacity:.45;cursor:not-allowed; }
+  .btn-download { padding:10px 14px;background:var(--gray-100);color:var(--gray-600);border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:background .2s,color .2s;display:flex;align-items:center;gap:5px; }
+  .btn-download:hover:not(:disabled) { background:var(--pink-pale);color:var(--pink);border-color:var(--pink-light); }
+  .btn-download:disabled { opacity:.35;cursor:not-allowed; }
+
+  .spinner { width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;flex-shrink:0; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+
+  ::-webkit-scrollbar { width:6px;height:6px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:var(--pink-pale);border-radius:99px; }
+  ::-webkit-scrollbar-thumb:hover { background:var(--pink-light); }
+
+  .radio-pill { flex:1;padding:8px 6px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);text-align:center;cursor:pointer;font-size:12px;font-weight:600;color:var(--gray-600);background:var(--white);transition:all .2s;user-select:none; }
+  .radio-pill:hover { border-color:var(--pink-light);color:var(--pink); }
+  .radio-pill-active { border-color:var(--pink)!important;background:var(--pink-pale)!important;color:var(--pink-dark)!important; }
+
+  @media (max-width:1280px) { .sidebar{width:260px} .cards-grid{grid-template-columns:1fr 1fr} }
+  @media (max-width:900px)  { .app-body{flex-direction:column} .sidebar{width:100%;max-height:none;position:static} .cards-grid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-logo">💜</div>
+  <div>
+    <h1>Kaba SOS Kit</h1>
+    <p>Amazon Listing Image Generator — GPT Image 2 (OpenAI)</p>
+  </div>
+  <div class="header-badge">6 Images</div>
+</header>
+
+<div class="app-body">
+<aside class="sidebar">
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">🔑 OpenAI API Key</div>
+    <div>
+      <label for="apiKeyInput">API Key</label>
+      <div class="input-wrap" style="margin-top:6px">
+        <input type="password" id="apiKeyInput" placeholder="sk-..." autocomplete="off">
+        <button class="eye-btn" id="eyeBtn">👁</button>
+      </div>
+    </div>
+    <p class="hint">🔒 Saved locally in your browser.<br>Get a key at <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a></p>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">⚙️ Generation Options</div>
+    <div>
+      <label style="margin-bottom:6px;display:block">Quality</label>
+      <div style="display:flex;gap:6px">
+        <label class="radio-pill" id="pill-medium">
+          <input type="radio" name="quality" value="medium" style="display:none">
+          <span>Standard <span style="opacity:.65;font-size:10px">$0.04</span></span>
+        </label>
+        <label class="radio-pill radio-pill-active" id="pill-high">
+          <input type="radio" name="quality" value="high" checked style="display:none">
+          <span>High <span style="opacity:.65;font-size:10px">$0.08</span></span>
+        </label>
+      </div>
+    </div>
+    <div>
+      <label style="margin-bottom:6px;display:block">Output Size</label>
+      <select id="sizeSelect" style="width:100%;padding:9px 10px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;outline:none;background:var(--white);cursor:pointer;">
+        <option value="1024x1024">1024×1024</option>
+        <option value="1536x1536" selected>1536×1536</option>
+        <option value="auto">Auto (model decides)</option>
+      </select>
+    </div>
+    <p class="hint">Model: <strong>gpt-image-2</strong>. With reference image → edits endpoint. Without → generations endpoint.</p>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">📦 Product Reference Image</div>
+    <div id="uploadContainer">
+      <div class="upload-area" id="uploadArea">
+        <input type="file" id="refImageInput" accept="image/jpeg,image/png,image/webp">
+        <div class="upload-icon">🖼️</div>
+        <div class="upload-text">Click or drag JPG/PNG here<br><strong>Max 5 MB · resized to ≤1024px</strong></div>
+      </div>
+    </div>
+    <div class="ref-preview" id="refPreview">
+      <img id="refThumb" src="" alt="Reference">
+      <button class="ref-preview-remove" id="removeRefBtn">✕</button>
+    </div>
+    <div class="ref-label" id="refLabel" style="display:none">✅ Reference image loaded</div>
+    <p class="hint">Optional. Sent to GPT Image 2 via the edits endpoint — preserves exact product colors and labels.</p>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">🚀 Batch Generation</div>
+    <button class="btn-primary" id="generateAllBtn"><span>✨ Generate All 6 Images</span></button>
+    <div class="progress-wrap">
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="globalProgressBar"></div></div>
+      <div class="progress-text" id="globalProgressText">0 / 6 completed</div>
+    </div>
+    <p class="hint">⏱ ~7 s between images (free tier: 10 RPM)</p>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">📋 Status Log</div>
+    <div class="log-box" id="logBox">
+      <div class="log-entry info">Ready. Enter your API key and generate.</div>
+    </div>
+  </div>
+
+</aside>
+
+<main class="main-content">
+  <div class="section-title">🎨 <span>Amazon Listing Images</span> — SOS Kit Kaba</div>
+  <div class="cards-grid" id="cardsGrid"></div>
+</main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════════════════════════════
+const OPENAI_EDITS_URL       = 'https://api.openai.com/v1/images/edits';
+const OPENAI_GENERATIONS_URL = 'https://api.openai.com/v1/images/generations';
+const RATE_LIMIT_MS = 12000;   // 5 images/min → 12 s between requests
+const RETRY_429_MS  = 62000;
+
+// ── PROMPTS ──────────────────────────────────────────────────
+const DEFAULT_PROMPTS = [
+
+// 1 - White Background
+`Professional Amazon product listing image for Kaba SOS Kit (hair care kit: Onion Shampoo, Conditioner, Hair Tonic).
+
+IMAGE 1 — MAIN WHITE BACKGROUND: Pure white (#FFFFFF) background. Show all 3 products (Onion Shampoo bottle, Conditioner bottle, Hair Tonic bottle) grouped tightly together with zero gap between them, centered and filling the entire frame. All product label text must be clearly legible. Include realistic decorative elements around the products: whole onions, sliced onions, almond nuts, and green leaves to highlight key ingredients. Products must occupy 90%+ of the frame. No shadows except a very subtle soft reflection on the floor. No additional text or graphics outside the packaging.
+
+Style: clean, professional, e-commerce Amazon listing.
+All text in English. Resolution: 2000×2000px.
+IMPORTANT: Do not change product colors, labels, or logo. If a reference image is provided, maintain exact product appearance.`,
+
+// 2 - Before/After
+`Professional Amazon product listing image for Kaba SOS Kit (hair care kit: Onion Shampoo, Conditioner, Hair Tonic).
+
+IMAGE 2 — BEFORE / AFTER RESULTS: Split layout (left = BEFORE, right = AFTER). Feature realistic-looking hair photos showing transformation. BEFORE side: dull, damaged, frizzy, thinning hair with visible breakage. AFTER side: shiny, thick, healthy, smooth, well-defined hair. A thin elegant dividing line with "BEFORE" and "AFTER" labels separates both halves. The hair results occupy 80% of the total image. At the bottom include the text "5 WEEKS" inside an accent badge (pink/fuchsia) indicating the time to achieve results. Small caption: "Results may vary per individual." Clean, inspiring, aspirational feel.
+
+Style: clean, professional, e-commerce Amazon listing.
+All text in English. Resolution: 2000×3000px.
+IMPORTANT: Do not change product colors, labels, or logo. If a reference image is provided, maintain exact product appearance.`,
+
+// 3 - Features
+`Professional Amazon product listing image for Kaba SOS Kit (hair care kit: Onion Shampoo, Conditioner, Hair Tonic).
+
+IMAGE 3 — FEATURES INFOGRAPHIC: Light pink or white background. Large bold title at top: "VISIBLE REPAIR & HEALTHY GROWTH IN 4–6 WEEKS". Below the title, display the 3 products side by side (smaller, right side or center). Then 3 feature bullet points with icons:
+• 🔬 Molecular Repair — Bond repair. Stops breakage. Deep hydration.
+• 🌿 Microbiota Balance — Healthier scalp for lasting growth.
+• ✅ Clean Formula — No salt, silicones, or parabens.
+Each bullet point has a bold keyword, followed by the description in a smaller weight. Use pink/fuchsia accent color for icons and highlights. Minimal, modern infographic style.
+
+Style: clean, professional, e-commerce Amazon listing.
+All text in English. Resolution: 2000×2000px.
+IMPORTANT: Do not change product colors, labels, or logo. If a reference image is provided, maintain exact product appearance.`,
+
+// 4 - Social Proof
+`Professional Amazon product listing image for Kaba SOS Kit (hair care kit: Onion Shampoo, Conditioner, Hair Tonic).
+
+IMAGE 4 — SOCIAL PROOF / LIFESTYLE: Bold title at top: "YOUR HAIR'S ULTIMATE RESCUE". Show 3–4 diverse women influencer-style photos (different hair types: curly, wavy, straight, thick/fine) arranged in an attractive collage. Each photo shows healthy, beautiful hair. Three sub-headlines overlaid or alongside:
+• "Reconnects broken bonds instantly."
+• "Complete 3-step routine to rescue your hair."
+• "Deep hydration with zero heavy buildup."
+Use pink/fuchsia accent highlights, elegant typography. Small product image in one corner. Aspirational, empowering, beauty brand feel.
+
+Style: clean, professional, e-commerce Amazon listing.
+All text in English. Resolution: 2000×2000px.
+IMPORTANT: Do not change product colors, labels, or logo. If a reference image is provided, maintain exact product appearance.`,
+
+// 5 - How to Use
+`Professional Amazon product listing image for Kaba SOS Kit (hair care kit: Onion Shampoo, Conditioner, Hair Tonic).
+
+IMAGE 5 — HOW TO USE (3-STEP ROUTINE): Clean white or very light pink background. Title: "Easy 3-Step Weekly Routine". Display 3 numbered steps in a horizontal or vertical flow with icons/illustrations:
+Step 1 🌙 Night Routine — Apply Hair Tonic directly to scalp, massage gently for 5 minutes. Leave in overnight.
+Step 2 ☀️ Day Routine — Apply Conditioner from mid-lengths to ends. Leave for 3 minutes, rinse.
+Step 3 🚿 Wash — Apply Onion Shampoo to roots and lengths. Wash twice with cold water.
+Show small product bottle illustration next to each step. Minimal text, clear visual hierarchy, easy to scan. Modern icons in pink/fuchsia.
+
+Style: clean, professional, e-commerce Amazon listing.
+All text in English. Resolution: 2000×2000px.
+IMPORTANT: Do not change product colors, labels, or logo. If a reference image is provided, maintain exact product appearance.`,
+
+// 6 - Comparison
+`Professional Amazon product listing image for Kaba SOS Kit (hair care kit: Onion Shampoo, Conditioner, Hair Tonic).
+
+IMAGE 6 — COMPARISON CHART: Title: "Proven Definitive Results". Create a comparison table with 2 columns: "Kaba SOS Kit" (left, highlighted in pink/fuchsia) vs "Others" (right, in gray). Rows to include (Kaba column = ✅ green checkmark, Others column = ❌ red X):
+• Reconnects Broken Bonds
+• Bond-Rebuilding Technology
+• Healthy Scalp Microbiome
+• 100% Salt & Silicone-Free
+• Complete 3-Step Rescue Routine
+The "Kaba SOS Kit" column header should have a subtle pink glow or highlight. At the bottom include a badge/seal that reads "Clinically Demonstrated". DO NOT name any competitor brands. DO NOT use the words "better" or "best choice". Professional, trustworthy, data-driven look. Include the product image on one side.
+
+Style: clean, professional, e-commerce Amazon listing.
+All text in English. Resolution: 2000×2000px.
+IMPORTANT: Do not change product colors, labels, or logo. If a reference image is provided, maintain exact product appearance.`,
+];
+
+const IMAGE_META = [
+  { num:1, name:'White Background',  dims:'2000×2000px', filename:'kaba_01_white-background', tooltip:'Main listing image. Amazon requires white background. First image shoppers see — highest impact on CTR.' },
+  { num:2, name:'Before / After',    dims:'2000×3000px', filename:'kaba_02_before-after',     tooltip:'Shows hair transformation results in 5 weeks. Key for conversions — customers want proof it works.' },
+  { num:3, name:'Features',          dims:'2000×2000px', filename:'kaba_03_features',         tooltip:'Infographic detailing product benefits and clean formula. Addresses customer objections.' },
+  { num:4, name:'Social Proof',      dims:'2000×2000px', filename:'kaba_04_social-proof',     tooltip:'Lifestyle image showing diverse hair types. Builds trust and broad audience appeal.' },
+  { num:5, name:'How to Use',        dims:'2000×2000px', filename:'kaba_05_how-to-use',       tooltip:'Reduces returns and negative reviews by showing exact usage steps.' },
+  { num:6, name:'Comparison Chart',  dims:'2000×2000px', filename:'kaba_06_comparison',       tooltip:'Positions Kaba vs generic alternatives without naming brands. Reinforces key differentiators.' },
+];
+
+// ═══════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════
+let refImageBase64 = null;
+let refImageMime   = 'image/jpeg';
+let generatedImages = new Array(6).fill(null);
+let isGeneratingAll = false;
+
+// ═══════════════════════════════════════════════════════════════
+//  LOCALSTORAGE
+// ═══════════════════════════════════════════════════════════════
+const LS_API    = 'kaba_openai_key';
+const LS_PROMPT = i => `kaba_prompt_${i}`;
+const saveKey    = k    => { try{ localStorage.setItem(LS_API, k); }catch(e){} };
+const loadKey    = ()   => { try{ return localStorage.getItem(LS_API)||''; }catch(e){ return ''; } };
+const savePrompt = (i,t)=> { try{ localStorage.setItem(LS_PROMPT(i), t); }catch(e){} };
+const loadPrompt = i    => { try{ return localStorage.getItem(LS_PROMPT(i)); }catch(e){ return null; } };
+
+// ═══════════════════════════════════════════════════════════════
+//  LOG
+// ═══════════════════════════════════════════════════════════════
+function log(msg, type = 'info') {
+  const box = document.getElementById('logBox');
+  const el = document.createElement('div');
+  el.className = `log-entry ${type}`;
+  const now = new Date();
+  const ts = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  el.textContent = `[${ts}] ${msg}`;
+  box.appendChild(el);
+  while (box.children.length > 10) box.removeChild(box.firstChild);
+  box.scrollTop = box.scrollHeight;
+}
+
+function updateProgress(done) {
+  document.getElementById('globalProgressBar').style.width = Math.round(done/6*100) + '%';
+  document.getElementById('globalProgressText').textContent = `${done} / 6 completed`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CARD STATE
+// ═══════════════════════════════════════════════════════════════
+function setCardState(idx, state) {
+  const card  = document.getElementById(`card-${idx}`);
+  const badge = document.getElementById(`badge-${idx}`);
+  const btn   = document.getElementById(`genBtn-${idx}`);
+  const chk   = document.getElementById(`check-${idx}`);
+  const err   = document.getElementById(`errMsg-${idx}`);
+
+  card.className = `img-card state-${state}`;
+  err.style.display = 'none';
+  chk.style.display = state === 'success' ? 'flex' : 'none';
+
+  const labels = { idle:'Idle', loading:'Generating…', success:'Done ✓', error:'Error' };
+  badge.className = `card-status-badge badge-${state}`;
+  badge.textContent = labels[state] || state;
+
+  if (state === 'loading') {
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Generating…';
+  } else if (state === 'success') {
+    btn.disabled = false;
+    btn.innerHTML = '🔄 Re-generate';
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = '✨ Generate';
+  }
+}
+
+function showCardError(idx, msg) {
+  const el = document.getElementById(`errMsg-${idx}`);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function showGeneratedImage(idx, base64, mime) {
+  generatedImages[idx] = { base64, mime };
+  const preview = document.getElementById(`preview-${idx}`);
+  document.getElementById(`previewImg-${idx}`).src = `data:${mime};base64,${base64}`;
+  preview.style.display = 'block';
+  document.getElementById(`dlBtn-${idx}`).disabled = false;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  BUILD CARDS
+// ═══════════════════════════════════════════════════════════════
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function buildCards() {
+  const grid = document.getElementById('cardsGrid');
+  grid.innerHTML = '';
+  IMAGE_META.forEach((meta, i) => {
+    const saved = loadPrompt(i);
+    const prompt = saved !== null ? saved : DEFAULT_PROMPTS[i];
+
+    const card = document.createElement('div');
+    card.className = 'img-card state-idle';
+    card.id = `card-${i}`;
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-num">${meta.num}</div>
+        <div class="card-info">
+          <div class="card-title">${meta.name}</div>
+          <div class="card-dims">${meta.dims}</div>
+        </div>
+        <div class="card-status-badge badge-idle" id="badge-${i}">Idle</div>
+        <div class="success-check" id="check-${i}">✓</div>
+        <button class="tooltip-btn">ℹ️<div class="tooltip-popup">${meta.tooltip}</div></button>
+      </div>
+      <div class="card-body">
+        <div class="prompt-label">
+          Prompt (editable)
+          <button class="prompt-reset" id="resetBtn-${i}">↩ reset</button>
+        </div>
+        <textarea class="prompt-textarea" id="prompt-${i}" rows="6">${escHtml(prompt)}</textarea>
+        <div class="card-error-msg" id="errMsg-${i}"></div>
+        <div class="preview-area" id="preview-${i}" style="display:none">
+          <img id="previewImg-${i}" src="" alt="Generated">
+          <div class="preview-overlay"><span>🔍 Open full size</span></div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-generate" id="genBtn-${i}">✨ Generate</button>
+        <button class="btn-download" id="dlBtn-${i}" disabled>⬇ Save</button>
+      </div>`;
+
+    grid.appendChild(card);
+
+    card.querySelector(`#resetBtn-${i}`).addEventListener('click', () => {
+      document.getElementById(`prompt-${i}`).value = DEFAULT_PROMPTS[i];
+      savePrompt(i, DEFAULT_PROMPTS[i]);
+      log(`Prompt ${meta.num} reset to default.`, 'info');
+    });
+    card.querySelector(`#prompt-${i}`).addEventListener('input', e => savePrompt(i, e.target.value));
+    card.querySelector(`#genBtn-${i}`).addEventListener('click', () => generateSingle(i));
+    card.querySelector(`#dlBtn-${i}`).addEventListener('click', () => downloadImage(i));
+    card.querySelector(`#preview-${i}`).addEventListener('click', () => {
+      const d = generatedImages[i]; if (!d) return;
+      const w = window.open();
+      w.document.write(`<img src="data:${d.mime};base64,${d.base64}" style="max-width:100%;">`);
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  DOWNLOAD
+// ═══════════════════════════════════════════════════════════════
+function downloadImage(idx) {
+  const d = generatedImages[idx]; if (!d) return;
+  const ext = d.mime === 'image/png' ? 'png' : 'jpg';
+  const a = document.createElement('a');
+  a.href = `data:${d.mime};base64,${d.base64}`;
+  a.download = `${IMAGE_META[idx].filename}.${ext}`;
+  a.click();
+  log(`Image ${idx+1} downloaded.`, 'ok');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SLEEP
+// ═══════════════════════════════════════════════════════════════
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+async function sleepCountdown(ms, label) {
+  for (let i = Math.ceil(ms/1000); i > 0; i--) {
+    log(`${label} ${i}s…`, 'warn');
+    await sleep(1000);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  API CALL — GPT Image 2
+// ═══════════════════════════════════════════════════════════════
+function base64ToBlob(b64, mime) {
+  const binary = atob(b64);
+  const arr = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) arr[i] = binary.charCodeAt(i);
+  return new Blob([arr], { type: mime });
+}
+
+async function callOpenAI(apiKey, prompt, retry = true) {
+  const quality = document.querySelector('input[name="quality"]:checked')?.value || 'high';
+  const size    = document.getElementById('sizeSelect').value;
+
+  let url, res;
+
+  if (refImageBase64) {
+    // With reference image → /images/edits (multipart)
+    const fd = new FormData();
+    fd.append('model',           'gpt-image-2');
+    fd.append('prompt',          prompt);
+    fd.append('n',       '1');
+    fd.append('size',    size);
+    fd.append('quality', quality);
+    const blob = base64ToBlob(refImageBase64, refImageMime);
+    const ext  = refImageMime === 'image/png' ? 'png' : 'jpg';
+    fd.append('image[]', blob, `product.${ext}`);
+    url = OPENAI_EDITS_URL;
+    res = await fetch(url, {
+      method:  'POST',
+      headers: { 'Authorization': `Bearer ${apiKey}` },
+      body:    fd
+    });
+  } else {
+    // Without reference image → /images/generations (JSON)
+    url = OPENAI_GENERATIONS_URL;
+    res = await fetch(url, {
+      method:  'POST',
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ model:'gpt-image-2', prompt, n:1, size, quality })
+    });
+  }
+
+  if (res.status === 429) {
+    if (retry) {
+      log('Rate limit (429). Retrying in 62s…', 'warn');
+      await sleepCountdown(RETRY_429_MS, 'Retry in');
+      return callOpenAI(apiKey, prompt, false);
+    }
+    throw new Error('QUOTA_EXCEEDED');
+  }
+  if (!res.ok) {
+    let detail = res.statusText;
+    try { const j = await res.json(); detail = j?.error?.message || JSON.stringify(j).slice(0,300); } catch(e){}
+    throw new Error(`API ${res.status}: ${detail}`);
+  }
+
+  const json = await res.json();
+  const item = json?.data?.[0];
+  if (!item) throw new Error('NO_IMAGE');
+
+  if (item.b64_json) {
+    return { base64: item.b64_json, mime: 'image/png' };
+  }
+  if (item.url) {
+    // Fetch the URL and convert to base64
+    const imgRes = await fetch(item.url);
+    const blob   = await imgRes.blob();
+    const b64    = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload  = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+    return { base64: b64, mime: blob.type || 'image/png' };
+  }
+  throw new Error('NO_IMAGE');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  GENERATE SINGLE
+// ═══════════════════════════════════════════════════════════════
+async function generateSingle(idx) {
+  const apiKey = document.getElementById('apiKeyInput').value.trim();
+  if (!apiKey) { alert('Enter your Google AI Studio API key first.'); return; }
+  const prompt = document.getElementById(`prompt-${idx}`).value.trim();
+  if (!prompt) { alert('Prompt is empty.'); return; }
+
+  setCardState(idx, 'loading');
+  log(`Generating image ${idx+1} (${IMAGE_META[idx].name})…`, 'info');
+
+  try {
+    const result = await callOpenAI(apiKey, prompt);
+    showGeneratedImage(idx, result.base64, result.mime);
+    setCardState(idx, 'success');
+    log(`✅ Image ${idx+1} ready!`, 'ok');
+  } catch(err) {
+    setCardState(idx, 'error');
+    let msg = err.message;
+    if (msg === 'QUOTA_EXCEEDED') msg = 'Quota exceeded even after retry. Wait a few minutes.';
+    if (msg === 'NO_IMAGE')       msg = 'No image in response. Try again or change the model.';
+    showCardError(idx, msg);
+    log(`❌ Image ${idx+1} failed: ${msg}`, 'error');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  GENERATE ALL
+// ═══════════════════════════════════════════════════════════════
+async function generateAll() {
+  if (isGeneratingAll) return;
+  const apiKey = document.getElementById('apiKeyInput').value.trim();
+  if (!apiKey) { alert('Enter your Google AI Studio API key first.'); return; }
+
+  isGeneratingAll = true;
+  const btn = document.getElementById('generateAllBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner" style="border-color:rgba(255,255,255,.35);border-top-color:#fff"></div> Generating…';
+
+  updateProgress(0);
+  log('Starting batch generation of all 6 images…', 'info');
+  let done = 0;
+
+  for (let i = 0; i < 6; i++) {
+    const prompt = document.getElementById(`prompt-${i}`).value.trim();
+    setCardState(i, 'loading');
+    log(`[${i+1}/6] Generating "${IMAGE_META[i].name}"…`, 'info');
+
+    try {
+      const result = await callOpenAI(apiKey, prompt);
+      showGeneratedImage(i, result.base64, result.mime);
+      setCardState(i, 'success');
+      done++;
+      updateProgress(done);
+      log(`✅ [${i+1}/6] "${IMAGE_META[i].name}" done.`, 'ok');
+    } catch(err) {
+      setCardState(i, 'error');
+      let msg = err.message;
+      if (msg === 'QUOTA_EXCEEDED') { showCardError(i, 'Quota exceeded.'); log('❌ Quota exceeded. Stopping batch.', 'error'); break; }
+      if (msg === 'NO_IMAGE') msg = 'No image in response.';
+      showCardError(i, msg);
+      log(`❌ [${i+1}/6] Failed: ${msg}`, 'error');
+    }
+
+    if (i < 5) {
+      log(`Waiting ${RATE_LIMIT_MS/1000}s before next image…`, 'warn');
+      await sleep(RATE_LIMIT_MS);
+    }
+  }
+
+  isGeneratingAll = false;
+  btn.disabled = false;
+  btn.innerHTML = '<span>✨ Generate All 6 Images</span>';
+  log(`Batch done. ${done}/6 images generated.`, done === 6 ? 'ok' : 'warn');
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  IMAGE RESIZE + BASE64
+// ═══════════════════════════════════════════════════════════════
+function resizeAndEncode(file) {
+  return new Promise((resolve, reject) => {
+    const MAX = 1024;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let { width: w, height: h } = img;
+        if (w > MAX || h > MAX) {
+          if (w > h) { h = Math.round(h*MAX/w); w = MAX; }
+          else       { w = Math.round(w*MAX/h); h = MAX; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const mime = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+        const dataUrl = canvas.toDataURL(mime, 0.92);
+        resolve({ base64: dataUrl.split(',')[1], mime, dataUrl });
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Quality radio pills
+  document.querySelectorAll('input[name="quality"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      document.querySelectorAll('.radio-pill').forEach(p => p.classList.remove('radio-pill-active'));
+      radio.closest('.radio-pill').classList.add('radio-pill-active');
+    });
+  });
+  document.querySelectorAll('.radio-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const radio = pill.querySelector('input[type="radio"]');
+      radio.checked = true;
+      radio.dispatchEvent(new Event('change'));
+    });
+  });
+
+  buildCards();
+
+  // API key
+  const apiInput = document.getElementById('apiKeyInput');
+  const savedKey = loadKey();
+  if (savedKey) { apiInput.value = savedKey; log('API key restored from localStorage.', 'ok'); }
+  apiInput.addEventListener('input', e => saveKey(e.target.value.trim()));
+
+  // Eye toggle
+  document.getElementById('eyeBtn').addEventListener('click', () => {
+    apiInput.type = apiInput.type === 'password' ? 'text' : 'password';
+  });
+
+  // Reference image upload
+  async function handleRefFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    try {
+      log('Processing reference image…', 'info');
+      const { base64, mime, dataUrl } = await resizeAndEncode(file);
+      refImageBase64 = base64;
+      refImageMime   = mime;
+      document.getElementById('refThumb').src = dataUrl;
+      document.getElementById('refPreview').style.display = 'block';
+      document.getElementById('uploadContainer').style.display = 'none';
+      document.getElementById('refLabel').style.display = 'block';
+      log(`Reference image loaded (${mime}, resized ≤1024px).`, 'ok');
+    } catch(err) {
+      log('Failed to load image: ' + err.message, 'error');
+    }
+  }
+
+  document.getElementById('refImageInput').addEventListener('change', e => handleRefFile(e.target.files[0]));
+
+  document.getElementById('removeRefBtn').addEventListener('click', () => {
+    refImageBase64 = null;
+    document.getElementById('refPreview').style.display = 'none';
+    document.getElementById('uploadContainer').style.display = 'block';
+    document.getElementById('refLabel').style.display = 'none';
+    document.getElementById('refImageInput').value = '';
+    log('Reference image removed.', 'info');
+  });
+
+  // Drag and drop
+  const uploadArea = document.getElementById('uploadArea');
+  uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.style.background = 'var(--pink-pale)'; });
+  uploadArea.addEventListener('dragleave', () => { uploadArea.style.background = ''; });
+  uploadArea.addEventListener('drop', e => {
+    e.preventDefault(); uploadArea.style.background = '';
+    handleRefFile(e.dataTransfer.files[0]);
+  });
+
+  // Generate all
+  document.getElementById('generateAllBtn').addEventListener('click', generateAll);
+});
+</script>
+</body>
+</html>
