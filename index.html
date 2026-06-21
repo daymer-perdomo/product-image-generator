@@ -38,7 +38,6 @@
   .header-logo { width:38px;height:38px;background:rgba(255,255,255,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0; }
   header h1 { font-size:20px;font-weight:700;letter-spacing:-0.3px; }
   header p  { font-size:13px;opacity:.85;margin-top:1px; }
-  .header-badge { margin-left:auto;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;letter-spacing:.3px; }
 
   .app-body { display:flex;min-height:calc(100vh - 64px); }
 
@@ -68,11 +67,6 @@
   .ref-preview-remove { position:absolute;top:6px;right:6px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center; }
   .ref-label { font-size:11px;text-align:center;color:var(--green);font-weight:600;margin-top:4px; }
 
-  .progress-wrap { display:flex;flex-direction:column;gap:6px; }
-  .progress-bar-bg { height:10px;background:var(--gray-200);border-radius:99px;overflow:hidden; }
-  .progress-bar-fill { height:100%;background:linear-gradient(90deg,var(--pink) 0%,var(--pink-light) 100%);border-radius:99px;transition:width .4s ease;width:0%; }
-  .progress-text { font-size:12px;color:var(--gray-600);text-align:center; }
-
   .btn-primary { width:100%;padding:12px;background:linear-gradient(135deg,var(--pink) 0%,var(--pink-dark) 100%);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .1s;letter-spacing:.2px;display:flex;align-items:center;justify-content:center;gap:8px; }
   .btn-primary:hover { opacity:.9; }
   .btn-primary:active { transform:scale(.98); }
@@ -85,72 +79,51 @@
   .log-entry.warn  { color:#FDE68A; }
   .log-entry.error { color:#FCA5A5; }
 
-  .main-content { flex:1;padding:24px;overflow-y:auto; }
-  .section-title { font-size:16px;font-weight:700;color:var(--gray-800);margin-bottom:18px;display:flex;align-items:center;gap:8px; }
+  .main-content { flex:1;padding:24px;overflow-y:auto;display:flex;flex-direction:column;gap:20px; }
+  .section-title { font-size:16px;font-weight:700;color:var(--gray-800);display:flex;align-items:center;gap:8px; }
   .section-title span { color:var(--pink); }
-  .cards-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:20px; }
 
-  .img-card { background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .2s;position:relative;border:2px solid transparent; }
-  .img-card:hover { box-shadow:var(--shadow-lg); }
-  .img-card.state-loading { border-color:var(--amber); }
-  .img-card.state-success { border-color:var(--green); }
-  .img-card.state-error   { border-color:var(--red); }
+  .prompt-card { background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;border:2px solid transparent;transition:border-color .2s; }
+  .prompt-card.state-loading { border-color:var(--amber); }
+  .prompt-card.state-success { border-color:var(--green); }
+  .prompt-card.state-error   { border-color:var(--red); }
 
-  .card-header { padding:14px 16px 10px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--gray-200); }
-  .card-num { width:32px;height:32px;flex-shrink:0;background:linear-gradient(135deg,var(--pink) 0%,var(--pink-light) 100%);color:var(--white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800; }
-  .card-info { flex:1; }
-  .card-title { font-size:14px;font-weight:700;color:var(--gray-800); }
-  .card-dims  { font-size:11px;color:var(--pink);font-weight:600;margin-top:2px; }
-  .card-status-badge { padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;flex-shrink:0;align-self:center; }
-  .badge-idle    { background:var(--gray-200);color:var(--gray-600); }
-  .badge-loading { background:#FEF3C7;color:#92400E; }
-  .badge-success { background:#DCFCE7;color:#166534; }
-  .badge-error   { background:#FEE2E2;color:#991B1B; }
-
-  .tooltip-btn { background:none;border:none;cursor:help;color:var(--gray-400);font-size:15px;padding:2px;position:relative;flex-shrink:0;align-self:center; }
-  .tooltip-popup { display:none;position:absolute;right:0;top:28px;background:#1A1A2E;color:#E2E8F0;border-radius:var(--radius-sm);padding:10px 12px;font-size:11px;line-height:1.6;width:220px;z-index:50;box-shadow:0 4px 20px rgba(0,0,0,.25); }
-  .tooltip-btn:hover .tooltip-popup { display:block; }
-
-  .success-check { position:absolute;top:12px;right:52px;width:24px;height:24px;background:var(--green);border-radius:50%;display:none;align-items:center;justify-content:center;color:white;font-size:13px;animation:popIn .35s cubic-bezier(.175,.885,.32,1.275); }
-  @keyframes popIn { 0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1} }
-
-  .card-body { padding:14px 16px;display:flex;flex-direction:column;gap:10px;flex:1; }
+  .prompt-card-body { padding:20px; display:flex;flex-direction:column;gap:12px; }
   .prompt-label { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-600);display:flex;align-items:center;justify-content:space-between; }
   .prompt-reset { font-size:10px;color:var(--pink);background:none;border:none;cursor:pointer;font-weight:600;text-transform:lowercase;letter-spacing:0; }
-  .prompt-textarea { width:100%;min-height:120px;padding:10px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:12px;font-family:inherit;line-height:1.5;resize:vertical;outline:none;color:var(--gray-800);transition:border-color .2s; }
+  .prompt-textarea { width:100%;min-height:200px;padding:12px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;line-height:1.6;resize:vertical;outline:none;color:var(--gray-800);transition:border-color .2s; }
   .prompt-textarea:focus { border-color:var(--pink-light); }
 
   .card-error-msg { display:none;background:#FEE2E2;color:#991B1B;border-radius:var(--radius-sm);padding:8px 10px;font-size:12px;line-height:1.5; }
 
   .preview-area { display:none;border-radius:var(--radius-sm);overflow:hidden;position:relative;background:var(--gray-100);cursor:pointer; }
-  .preview-area img { width:100%;display:block;max-height:220px;object-fit:contain;transition:opacity .3s; }
+  .preview-area img { width:100%;display:block;max-height:480px;object-fit:contain;transition:opacity .3s; }
   .preview-overlay { position:absolute;inset:0;background:rgba(233,30,140,0);display:flex;align-items:center;justify-content:center;transition:background .2s;opacity:0; }
   .preview-area:hover .preview-overlay { background:rgba(233,30,140,0.18);opacity:1; }
   .preview-overlay span { background:rgba(0,0,0,.6);color:#fff;border-radius:99px;padding:6px 14px;font-size:12px;font-weight:600; }
 
-  .card-footer { padding:10px 16px 14px;display:flex;gap:8px; }
-  .btn-generate { flex:1;padding:10px;background:linear-gradient(135deg,var(--pink) 0%,var(--pink-dark) 100%);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .1s;display:flex;align-items:center;justify-content:center;gap:6px; }
+  .card-footer { padding:0 20px 20px;display:flex;gap:8px; }
+  .btn-generate { flex:1;padding:12px;background:linear-gradient(135deg,var(--pink) 0%,var(--pink-dark) 100%);color:var(--white);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s,transform .1s;display:flex;align-items:center;justify-content:center;gap:6px; }
   .btn-generate:hover:not(:disabled) { opacity:.88; }
   .btn-generate:active:not(:disabled) { transform:scale(.98); }
   .btn-generate:disabled { opacity:.45;cursor:not-allowed; }
-  .btn-download { padding:10px 14px;background:var(--gray-100);color:var(--gray-600);border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:background .2s,color .2s;display:flex;align-items:center;gap:5px; }
+  .btn-download { padding:12px 18px;background:var(--gray-100);color:var(--gray-600);border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:background .2s,color .2s;display:flex;align-items:center;gap:5px; }
   .btn-download:hover:not(:disabled) { background:var(--pink-pale);color:var(--pink);border-color:var(--pink-light); }
   .btn-download:disabled { opacity:.35;cursor:not-allowed; }
 
   .spinner { width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;flex-shrink:0; }
   @keyframes spin { to{transform:rotate(360deg)} }
 
+  .radio-pill { flex:1;padding:8px 6px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);text-align:center;cursor:pointer;font-size:12px;font-weight:600;color:var(--gray-600);background:var(--white);transition:all .2s;user-select:none; }
+  .radio-pill:hover { border-color:var(--pink-light);color:var(--pink); }
+  .radio-pill-active { border-color:var(--pink)!important;background:var(--pink-pale)!important;color:var(--pink-dark)!important; }
+
   ::-webkit-scrollbar { width:6px;height:6px; }
   ::-webkit-scrollbar-track { background:transparent; }
   ::-webkit-scrollbar-thumb { background:var(--pink-pale);border-radius:99px; }
   ::-webkit-scrollbar-thumb:hover { background:var(--pink-light); }
 
-  .radio-pill { flex:1;padding:8px 6px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);text-align:center;cursor:pointer;font-size:12px;font-weight:600;color:var(--gray-600);background:var(--white);transition:all .2s;user-select:none; }
-  .radio-pill:hover { border-color:var(--pink-light);color:var(--pink); }
-  .radio-pill-active { border-color:var(--pink)!important;background:var(--pink-pale)!important;color:var(--pink-dark)!important; }
-
-  @media (max-width:1280px) { .sidebar{width:260px} .cards-grid{grid-template-columns:1fr 1fr} }
-  @media (max-width:900px)  { .app-body{flex-direction:column} .sidebar{width:100%;max-height:none;position:static} .cards-grid{grid-template-columns:1fr} }
+  @media (max-width:900px) { .app-body{flex-direction:column} .sidebar{width:100%;max-height:none;position:static} }
 </style>
 </head>
 <body>
@@ -161,7 +134,6 @@
     <h1>Kaba SOS Kit</h1>
     <p>Amazon Listing Image Generator — GPT Image 2 (OpenAI)</p>
   </div>
-  <div class="header-badge">6 Images</div>
 </header>
 
 <div class="app-body">
@@ -223,16 +195,6 @@
   </div>
 
   <div class="sidebar-section">
-    <div class="sidebar-section-title">🚀 Batch Generation</div>
-    <button class="btn-primary" id="generateAllBtn"><span>✨ Generate All 6 Images</span></button>
-    <div class="progress-wrap">
-      <div class="progress-bar-bg"><div class="progress-bar-fill" id="globalProgressBar"></div></div>
-      <div class="progress-text" id="globalProgressText">0 / 6 completed</div>
-    </div>
-    <p class="hint">⏱ ~7 s between images (free tier: 10 RPM)</p>
-  </div>
-
-  <div class="sidebar-section">
     <div class="sidebar-section-title">📋 Status Log</div>
     <div class="log-box" id="logBox">
       <div class="log-entry info">Ready. Enter your API key and generate.</div>
@@ -242,126 +204,46 @@
 </aside>
 
 <main class="main-content">
-  <div class="section-title">🎨 <span>Amazon Listing Images</span> — SOS Kit Kaba</div>
-  <div class="cards-grid" id="cardsGrid"></div>
+  <div class="section-title">🎨 <span>Generate Image</span> — SOS Kit Kaba</div>
+
+  <div class="prompt-card state-idle" id="promptCard">
+    <div class="prompt-card-body">
+      <div class="prompt-label">
+        Prompt (editable)
+        <button class="prompt-reset" id="resetBtn">↩ reset</button>
+      </div>
+      <textarea class="prompt-textarea" id="promptInput" placeholder="Describe the image you want to generate…"></textarea>
+      <div class="card-error-msg" id="errMsg"></div>
+      <div class="preview-area" id="previewArea">
+        <img id="previewImg" src="" alt="Generated">
+        <div class="preview-overlay"><span>🔍 Open full size</span></div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="btn-generate" id="generateBtn">✨ Generate</button>
+      <button class="btn-download" id="dlBtn" disabled>⬇ Save</button>
+    </div>
+  </div>
 </main>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════
-//  CONFIG
-// ═══════════════════════════════════════════════════════════════
 const OPENAI_EDITS_URL       = 'https://api.openai.com/v1/images/edits';
 const OPENAI_GENERATIONS_URL = 'https://api.openai.com/v1/images/generations';
-const RATE_LIMIT_MS = 12000;   // 5 images/min → 12 s between requests
-const RETRY_429_MS  = 62000;
+const RETRY_429_MS = 62000;
 
-// ── PROMPTS ──────────────────────────────────────────────────
-const DEFAULT_PROMPTS = [
+const LS_API    = 'kaba_openai_key';
+const LS_PROMPT = 'kaba_prompt';
+const saveKey    = k => { try{ localStorage.setItem(LS_API, k); }catch(e){} };
+const loadKey    = () => { try{ return localStorage.getItem(LS_API)||''; }catch(e){ return ''; } };
+const savePrompt = t => { try{ localStorage.setItem(LS_PROMPT, t); }catch(e){} };
+const loadPrompt = () => { try{ return localStorage.getItem(LS_PROMPT)||''; }catch(e){ return ''; } };
 
-// 1 - White Background
-`Professional Amazon product listing image for Kaba SOS Kit (hair care kit: Onion Shampoo, Conditioner, Hair Tonic).
-
-IMAGE 1 — MAIN WHITE BACKGROUND: Pure white (#FFFFFF) background. Show all 3 products (Onion Shampoo bottle, Conditioner bottle, Hair Tonic bottle) grouped tightly together with zero gap between them, centered and filling the entire frame. All product label text must be clearly legible. Include realistic decorative elements around the products: whole onions, sliced onions, almond nuts, and green leaves to highlight key ingredients. Products must occupy 90%+ of the frame. No shadows except a very subtle soft reflection on the floor. No additional text or graphics outside the packaging.
-
-Style: clean, professional, e-commerce Amazon listing.
-All text in English. Resolution: 2000×2000px.
-IMPORTANT: Do not change product colors, labels, or logo. If a reference image is provided, maintain exact product appearance.`,
-
-// 2 - Before/After
-`Professional Amazon product listing image for Kaba SOS Kit (hair care kit: Onion Shampoo, Conditioner, Hair Tonic).
-
-IMAGE 2 — BEFORE / AFTER RESULTS: Split layout (left = BEFORE, right = AFTER). Feature realistic-looking hair photos showing transformation. BEFORE side: dull, damaged, frizzy, thinning hair with visible breakage. AFTER side: shiny, thick, healthy, smooth, well-defined hair. A thin elegant dividing line with "BEFORE" and "AFTER" labels separates both halves. The hair results occupy 80% of the total image. At the bottom include the text "5 WEEKS" inside an accent badge (pink/fuchsia) indicating the time to achieve results. Small caption: "Results may vary per individual." Clean, inspiring, aspirational feel.
-
-Style: clean, professional, e-commerce Amazon listing.
-All text in English. Resolution: 2000×3000px.
-IMPORTANT: Do not change product colors, labels, or logo. If a reference image is provided, maintain exact product appearance.`,
-
-// 3 - Features
-`Professional Amazon product listing image for Kaba SOS Kit (hair care kit: Onion Shampoo, Conditioner, Hair Tonic).
-
-IMAGE 3 — FEATURES INFOGRAPHIC: Light pink or white background. Large bold title at top: "VISIBLE REPAIR & HEALTHY GROWTH IN 4–6 WEEKS". Below the title, display the 3 products side by side (smaller, right side or center). Then 3 feature bullet points with icons:
-• 🔬 Molecular Repair — Bond repair. Stops breakage. Deep hydration.
-• 🌿 Microbiota Balance — Healthier scalp for lasting growth.
-• ✅ Clean Formula — No salt, silicones, or parabens.
-Each bullet point has a bold keyword, followed by the description in a smaller weight. Use pink/fuchsia accent color for icons and highlights. Minimal, modern infographic style.
-
-Style: clean, professional, e-commerce Amazon listing.
-All text in English. Resolution: 2000×2000px.
-IMPORTANT: Do not change product colors, labels, or logo. If a reference image is provided, maintain exact product appearance.`,
-
-// 4 - Social Proof
-`Professional Amazon product listing image for Kaba SOS Kit (hair care kit: Onion Shampoo, Conditioner, Hair Tonic).
-
-IMAGE 4 — SOCIAL PROOF / LIFESTYLE: Bold title at top: "YOUR HAIR'S ULTIMATE RESCUE". Show 3–4 diverse women influencer-style photos (different hair types: curly, wavy, straight, thick/fine) arranged in an attractive collage. Each photo shows healthy, beautiful hair. Three sub-headlines overlaid or alongside:
-• "Reconnects broken bonds instantly."
-• "Complete 3-step routine to rescue your hair."
-• "Deep hydration with zero heavy buildup."
-Use pink/fuchsia accent highlights, elegant typography. Small product image in one corner. Aspirational, empowering, beauty brand feel.
-
-Style: clean, professional, e-commerce Amazon listing.
-All text in English. Resolution: 2000×2000px.
-IMPORTANT: Do not change product colors, labels, or logo. If a reference image is provided, maintain exact product appearance.`,
-
-// 5 - How to Use
-`Professional Amazon product listing image for Kaba SOS Kit (hair care kit: Onion Shampoo, Conditioner, Hair Tonic).
-
-IMAGE 5 — HOW TO USE (3-STEP ROUTINE): Clean white or very light pink background. Title: "Easy 3-Step Weekly Routine". Display 3 numbered steps in a horizontal or vertical flow with icons/illustrations:
-Step 1 🌙 Night Routine — Apply Hair Tonic directly to scalp, massage gently for 5 minutes. Leave in overnight.
-Step 2 ☀️ Day Routine — Apply Conditioner from mid-lengths to ends. Leave for 3 minutes, rinse.
-Step 3 🚿 Wash — Apply Onion Shampoo to roots and lengths. Wash twice with cold water.
-Show small product bottle illustration next to each step. Minimal text, clear visual hierarchy, easy to scan. Modern icons in pink/fuchsia.
-
-Style: clean, professional, e-commerce Amazon listing.
-All text in English. Resolution: 2000×2000px.
-IMPORTANT: Do not change product colors, labels, or logo. If a reference image is provided, maintain exact product appearance.`,
-
-// 6 - Comparison
-`Professional Amazon product listing image for Kaba SOS Kit (hair care kit: Onion Shampoo, Conditioner, Hair Tonic).
-
-IMAGE 6 — COMPARISON CHART: Title: "Proven Definitive Results". Create a comparison table with 2 columns: "Kaba SOS Kit" (left, highlighted in pink/fuchsia) vs "Others" (right, in gray). Rows to include (Kaba column = ✅ green checkmark, Others column = ❌ red X):
-• Reconnects Broken Bonds
-• Bond-Rebuilding Technology
-• Healthy Scalp Microbiome
-• 100% Salt & Silicone-Free
-• Complete 3-Step Rescue Routine
-The "Kaba SOS Kit" column header should have a subtle pink glow or highlight. At the bottom include a badge/seal that reads "Clinically Demonstrated". DO NOT name any competitor brands. DO NOT use the words "better" or "best choice". Professional, trustworthy, data-driven look. Include the product image on one side.
-
-Style: clean, professional, e-commerce Amazon listing.
-All text in English. Resolution: 2000×2000px.
-IMPORTANT: Do not change product colors, labels, or logo. If a reference image is provided, maintain exact product appearance.`,
-];
-
-const IMAGE_META = [
-  { num:1, name:'White Background',  dims:'2000×2000px', filename:'kaba_01_white-background', tooltip:'Main listing image. Amazon requires white background. First image shoppers see — highest impact on CTR.' },
-  { num:2, name:'Before / After',    dims:'2000×3000px', filename:'kaba_02_before-after',     tooltip:'Shows hair transformation results in 5 weeks. Key for conversions — customers want proof it works.' },
-  { num:3, name:'Features',          dims:'2000×2000px', filename:'kaba_03_features',         tooltip:'Infographic detailing product benefits and clean formula. Addresses customer objections.' },
-  { num:4, name:'Social Proof',      dims:'2000×2000px', filename:'kaba_04_social-proof',     tooltip:'Lifestyle image showing diverse hair types. Builds trust and broad audience appeal.' },
-  { num:5, name:'How to Use',        dims:'2000×2000px', filename:'kaba_05_how-to-use',       tooltip:'Reduces returns and negative reviews by showing exact usage steps.' },
-  { num:6, name:'Comparison Chart',  dims:'2000×2000px', filename:'kaba_06_comparison',       tooltip:'Positions Kaba vs generic alternatives without naming brands. Reinforces key differentiators.' },
-];
-
-// ═══════════════════════════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════════════════════════
 let refImageBase64 = null;
 let refImageMime   = 'image/jpeg';
-let generatedImages = new Array(6).fill(null);
-let isGeneratingAll = false;
+let generatedImage = null;
+let isGenerating   = false;
 
-// ═══════════════════════════════════════════════════════════════
-//  LOCALSTORAGE
-// ═══════════════════════════════════════════════════════════════
-const LS_API    = 'kaba_openai_key';
-const LS_PROMPT = i => `kaba_prompt_${i}`;
-const saveKey    = k    => { try{ localStorage.setItem(LS_API, k); }catch(e){} };
-const loadKey    = ()   => { try{ return localStorage.getItem(LS_API)||''; }catch(e){ return ''; } };
-const savePrompt = (i,t)=> { try{ localStorage.setItem(LS_PROMPT(i), t); }catch(e){} };
-const loadPrompt = i    => { try{ return localStorage.getItem(LS_PROMPT(i)); }catch(e){ return null; } };
-
-// ═══════════════════════════════════════════════════════════════
-//  LOG
-// ═══════════════════════════════════════════════════════════════
 function log(msg, type = 'info') {
   const box = document.getElementById('logBox');
   const el = document.createElement('div');
@@ -374,29 +256,12 @@ function log(msg, type = 'info') {
   box.scrollTop = box.scrollHeight;
 }
 
-function updateProgress(done) {
-  document.getElementById('globalProgressBar').style.width = Math.round(done/6*100) + '%';
-  document.getElementById('globalProgressText').textContent = `${done} / 6 completed`;
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  CARD STATE
-// ═══════════════════════════════════════════════════════════════
-function setCardState(idx, state) {
-  const card  = document.getElementById(`card-${idx}`);
-  const badge = document.getElementById(`badge-${idx}`);
-  const btn   = document.getElementById(`genBtn-${idx}`);
-  const chk   = document.getElementById(`check-${idx}`);
-  const err   = document.getElementById(`errMsg-${idx}`);
-
-  card.className = `img-card state-${state}`;
+function setCardState(state) {
+  const card = document.getElementById('promptCard');
+  const btn  = document.getElementById('generateBtn');
+  const err  = document.getElementById('errMsg');
+  card.className = `prompt-card state-${state}`;
   err.style.display = 'none';
-  chk.style.display = state === 'success' ? 'flex' : 'none';
-
-  const labels = { idle:'Idle', loading:'Generating…', success:'Done ✓', error:'Error' };
-  badge.className = `card-status-badge badge-${state}`;
-  badge.textContent = labels[state] || state;
-
   if (state === 'loading') {
     btn.disabled = true;
     btn.innerHTML = '<div class="spinner"></div> Generating…';
@@ -409,99 +274,26 @@ function setCardState(idx, state) {
   }
 }
 
-function showCardError(idx, msg) {
-  const el = document.getElementById(`errMsg-${idx}`);
+function showError(msg) {
+  const el = document.getElementById('errMsg');
   el.textContent = msg;
   el.style.display = 'block';
 }
 
-function showGeneratedImage(idx, base64, mime) {
-  generatedImages[idx] = { base64, mime };
-  const preview = document.getElementById(`preview-${idx}`);
-  document.getElementById(`previewImg-${idx}`).src = `data:${mime};base64,${base64}`;
-  preview.style.display = 'block';
-  document.getElementById(`dlBtn-${idx}`).disabled = false;
+function showResult(base64, mime) {
+  generatedImage = { base64, mime };
+  document.getElementById('previewImg').src = `data:${mime};base64,${base64}`;
+  document.getElementById('previewArea').style.display = 'block';
+  document.getElementById('dlBtn').disabled = false;
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  BUILD CARDS
-// ═══════════════════════════════════════════════════════════════
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function base64ToBlob(b64, mime) {
+  const binary = atob(b64);
+  const arr = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) arr[i] = binary.charCodeAt(i);
+  return new Blob([arr], { type: mime });
 }
 
-function buildCards() {
-  const grid = document.getElementById('cardsGrid');
-  grid.innerHTML = '';
-  IMAGE_META.forEach((meta, i) => {
-    const saved = loadPrompt(i);
-    const prompt = saved !== null ? saved : DEFAULT_PROMPTS[i];
-
-    const card = document.createElement('div');
-    card.className = 'img-card state-idle';
-    card.id = `card-${i}`;
-    card.innerHTML = `
-      <div class="card-header">
-        <div class="card-num">${meta.num}</div>
-        <div class="card-info">
-          <div class="card-title">${meta.name}</div>
-          <div class="card-dims">${meta.dims}</div>
-        </div>
-        <div class="card-status-badge badge-idle" id="badge-${i}">Idle</div>
-        <div class="success-check" id="check-${i}">✓</div>
-        <button class="tooltip-btn">ℹ️<div class="tooltip-popup">${meta.tooltip}</div></button>
-      </div>
-      <div class="card-body">
-        <div class="prompt-label">
-          Prompt (editable)
-          <button class="prompt-reset" id="resetBtn-${i}">↩ reset</button>
-        </div>
-        <textarea class="prompt-textarea" id="prompt-${i}" rows="6">${escHtml(prompt)}</textarea>
-        <div class="card-error-msg" id="errMsg-${i}"></div>
-        <div class="preview-area" id="preview-${i}" style="display:none">
-          <img id="previewImg-${i}" src="" alt="Generated">
-          <div class="preview-overlay"><span>🔍 Open full size</span></div>
-        </div>
-      </div>
-      <div class="card-footer">
-        <button class="btn-generate" id="genBtn-${i}">✨ Generate</button>
-        <button class="btn-download" id="dlBtn-${i}" disabled>⬇ Save</button>
-      </div>`;
-
-    grid.appendChild(card);
-
-    card.querySelector(`#resetBtn-${i}`).addEventListener('click', () => {
-      document.getElementById(`prompt-${i}`).value = DEFAULT_PROMPTS[i];
-      savePrompt(i, DEFAULT_PROMPTS[i]);
-      log(`Prompt ${meta.num} reset to default.`, 'info');
-    });
-    card.querySelector(`#prompt-${i}`).addEventListener('input', e => savePrompt(i, e.target.value));
-    card.querySelector(`#genBtn-${i}`).addEventListener('click', () => generateSingle(i));
-    card.querySelector(`#dlBtn-${i}`).addEventListener('click', () => downloadImage(i));
-    card.querySelector(`#preview-${i}`).addEventListener('click', () => {
-      const d = generatedImages[i]; if (!d) return;
-      const w = window.open();
-      w.document.write(`<img src="data:${d.mime};base64,${d.base64}" style="max-width:100%;">`);
-    });
-  });
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  DOWNLOAD
-// ═══════════════════════════════════════════════════════════════
-function downloadImage(idx) {
-  const d = generatedImages[idx]; if (!d) return;
-  const ext = d.mime === 'image/png' ? 'png' : 'jpg';
-  const a = document.createElement('a');
-  a.href = `data:${d.mime};base64,${d.base64}`;
-  a.download = `${IMAGE_META[idx].filename}.${ext}`;
-  a.click();
-  log(`Image ${idx+1} downloaded.`, 'ok');
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  SLEEP
-// ═══════════════════════════════════════════════════════════════
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 async function sleepCountdown(ms, label) {
@@ -511,43 +303,28 @@ async function sleepCountdown(ms, label) {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  API CALL — GPT Image 2
-// ═══════════════════════════════════════════════════════════════
-function base64ToBlob(b64, mime) {
-  const binary = atob(b64);
-  const arr = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) arr[i] = binary.charCodeAt(i);
-  return new Blob([arr], { type: mime });
-}
-
 async function callOpenAI(apiKey, prompt, retry = true) {
   const quality = document.querySelector('input[name="quality"]:checked')?.value || 'high';
   const size    = document.getElementById('sizeSelect').value;
-
-  let url, res;
+  let res;
 
   if (refImageBase64) {
-    // With reference image → /images/edits (multipart)
     const fd = new FormData();
-    fd.append('model',           'gpt-image-2');
-    fd.append('prompt',          prompt);
+    fd.append('model',   'gpt-image-2');
+    fd.append('prompt',  prompt);
     fd.append('n',       '1');
     fd.append('size',    size);
     fd.append('quality', quality);
     const blob = base64ToBlob(refImageBase64, refImageMime);
     const ext  = refImageMime === 'image/png' ? 'png' : 'jpg';
     fd.append('image[]', blob, `product.${ext}`);
-    url = OPENAI_EDITS_URL;
-    res = await fetch(url, {
+    res = await fetch(OPENAI_EDITS_URL, {
       method:  'POST',
       headers: { 'Authorization': `Bearer ${apiKey}` },
       body:    fd
     });
   } else {
-    // Without reference image → /images/generations (JSON)
-    url = OPENAI_GENERATIONS_URL;
-    res = await fetch(url, {
+    res = await fetch(OPENAI_GENERATIONS_URL, {
       method:  'POST',
       headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body:    JSON.stringify({ model:'gpt-image-2', prompt, n:1, size, quality })
@@ -572,11 +349,9 @@ async function callOpenAI(apiKey, prompt, retry = true) {
   const item = json?.data?.[0];
   if (!item) throw new Error('NO_IMAGE');
 
-  if (item.b64_json) {
-    return { base64: item.b64_json, mime: 'image/png' };
-  }
+  if (item.b64_json) return { base64: item.b64_json, mime: 'image/png' };
+
   if (item.url) {
-    // Fetch the URL and convert to base64
     const imgRes = await fetch(item.url);
     const blob   = await imgRes.blob();
     const b64    = await new Promise((resolve, reject) => {
@@ -590,86 +365,34 @@ async function callOpenAI(apiKey, prompt, retry = true) {
   throw new Error('NO_IMAGE');
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  GENERATE SINGLE
-// ═══════════════════════════════════════════════════════════════
-async function generateSingle(idx) {
+async function generate() {
+  if (isGenerating) return;
   const apiKey = document.getElementById('apiKeyInput').value.trim();
-  if (!apiKey) { alert('Enter your Google AI Studio API key first.'); return; }
-  const prompt = document.getElementById(`prompt-${idx}`).value.trim();
+  if (!apiKey) { alert('Enter your OpenAI API key first.'); return; }
+  const prompt = document.getElementById('promptInput').value.trim();
   if (!prompt) { alert('Prompt is empty.'); return; }
 
-  setCardState(idx, 'loading');
-  log(`Generating image ${idx+1} (${IMAGE_META[idx].name})…`, 'info');
+  isGenerating = true;
+  setCardState('loading');
+  log('Generating image…', 'info');
 
   try {
     const result = await callOpenAI(apiKey, prompt);
-    showGeneratedImage(idx, result.base64, result.mime);
-    setCardState(idx, 'success');
-    log(`✅ Image ${idx+1} ready!`, 'ok');
+    showResult(result.base64, result.mime);
+    setCardState('success');
+    log('✅ Image ready!', 'ok');
   } catch(err) {
-    setCardState(idx, 'error');
+    setCardState('error');
     let msg = err.message;
     if (msg === 'QUOTA_EXCEEDED') msg = 'Quota exceeded even after retry. Wait a few minutes.';
     if (msg === 'NO_IMAGE')       msg = 'No image in response. Try again or change the model.';
-    showCardError(idx, msg);
-    log(`❌ Image ${idx+1} failed: ${msg}`, 'error');
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  GENERATE ALL
-// ═══════════════════════════════════════════════════════════════
-async function generateAll() {
-  if (isGeneratingAll) return;
-  const apiKey = document.getElementById('apiKeyInput').value.trim();
-  if (!apiKey) { alert('Enter your Google AI Studio API key first.'); return; }
-
-  isGeneratingAll = true;
-  const btn = document.getElementById('generateAllBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner" style="border-color:rgba(255,255,255,.35);border-top-color:#fff"></div> Generating…';
-
-  updateProgress(0);
-  log('Starting batch generation of all 6 images…', 'info');
-  let done = 0;
-
-  for (let i = 0; i < 6; i++) {
-    const prompt = document.getElementById(`prompt-${i}`).value.trim();
-    setCardState(i, 'loading');
-    log(`[${i+1}/6] Generating "${IMAGE_META[i].name}"…`, 'info');
-
-    try {
-      const result = await callOpenAI(apiKey, prompt);
-      showGeneratedImage(i, result.base64, result.mime);
-      setCardState(i, 'success');
-      done++;
-      updateProgress(done);
-      log(`✅ [${i+1}/6] "${IMAGE_META[i].name}" done.`, 'ok');
-    } catch(err) {
-      setCardState(i, 'error');
-      let msg = err.message;
-      if (msg === 'QUOTA_EXCEEDED') { showCardError(i, 'Quota exceeded.'); log('❌ Quota exceeded. Stopping batch.', 'error'); break; }
-      if (msg === 'NO_IMAGE') msg = 'No image in response.';
-      showCardError(i, msg);
-      log(`❌ [${i+1}/6] Failed: ${msg}`, 'error');
-    }
-
-    if (i < 5) {
-      log(`Waiting ${RATE_LIMIT_MS/1000}s before next image…`, 'warn');
-      await sleep(RATE_LIMIT_MS);
-    }
+    showError(msg);
+    log(`❌ Failed: ${msg}`, 'error');
   }
 
-  isGeneratingAll = false;
-  btn.disabled = false;
-  btn.innerHTML = '<span>✨ Generate All 6 Images</span>';
-  log(`Batch done. ${done}/6 images generated.`, done === 6 ? 'ok' : 'warn');
+  isGenerating = false;
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  IMAGE RESIZE + BASE64
-// ═══════════════════════════════════════════════════════════════
 function resizeAndEncode(file) {
   return new Promise((resolve, reject) => {
     const MAX = 1024;
@@ -697,12 +420,8 @@ function resizeAndEncode(file) {
   });
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Quality radio pills
   document.querySelectorAll('input[name="quality"]').forEach(radio => {
     radio.addEventListener('change', () => {
       document.querySelectorAll('.radio-pill').forEach(p => p.classList.remove('radio-pill-active'));
@@ -717,20 +436,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  buildCards();
-
-  // API key
   const apiInput = document.getElementById('apiKeyInput');
   const savedKey = loadKey();
   if (savedKey) { apiInput.value = savedKey; log('API key restored from localStorage.', 'ok'); }
   apiInput.addEventListener('input', e => saveKey(e.target.value.trim()));
 
-  // Eye toggle
   document.getElementById('eyeBtn').addEventListener('click', () => {
     apiInput.type = apiInput.type === 'password' ? 'text' : 'password';
   });
 
-  // Reference image upload
+  const promptInput = document.getElementById('promptInput');
+  const savedPrompt = loadPrompt();
+  if (savedPrompt) promptInput.value = savedPrompt;
+  promptInput.addEventListener('input', e => savePrompt(e.target.value));
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    promptInput.value = '';
+    savePrompt('');
+    log('Prompt cleared.', 'info');
+  });
+
+  document.getElementById('generateBtn').addEventListener('click', generate);
+
+  document.getElementById('dlBtn').addEventListener('click', () => {
+    if (!generatedImage) return;
+    const ext = generatedImage.mime === 'image/png' ? 'png' : 'jpg';
+    const a = document.createElement('a');
+    a.href = `data:${generatedImage.mime};base64,${generatedImage.base64}`;
+    a.download = `kaba_image.${ext}`;
+    a.click();
+    log('Image downloaded.', 'ok');
+  });
+
+  document.getElementById('previewArea').addEventListener('click', () => {
+    if (!generatedImage) return;
+    const w = window.open();
+    w.document.write(`<img src="data:${generatedImage.mime};base64,${generatedImage.base64}" style="max-width:100%;">`);
+  });
+
   async function handleRefFile(file) {
     if (!file || !file.type.startsWith('image/')) return;
     try {
@@ -759,7 +502,6 @@ document.addEventListener('DOMContentLoaded', () => {
     log('Reference image removed.', 'info');
   });
 
-  // Drag and drop
   const uploadArea = document.getElementById('uploadArea');
   uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.style.background = 'var(--pink-pale)'; });
   uploadArea.addEventListener('dragleave', () => { uploadArea.style.background = ''; });
@@ -767,9 +509,6 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault(); uploadArea.style.background = '';
     handleRefFile(e.dataTransfer.files[0]);
   });
-
-  // Generate all
-  document.getElementById('generateAllBtn').addEventListener('click', generateAll);
 });
 </script>
 </body>
